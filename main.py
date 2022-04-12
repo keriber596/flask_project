@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from werkzeug.utils import redirect
-
+from werkzeug.security import check_password_hash
 from data import db_session
 from data.users import User
 from forms.reg_user import RegisterForm
@@ -13,9 +13,13 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 def main():
     db_session.global_init("db/data.db")
     app.run()
+
+
 @app.route('/')
 def _():
     return render_template('base.html')
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def reqister():
     form = RegisterForm()
@@ -33,16 +37,27 @@ def reqister():
             name=form.name.data,
             email=form.email.data,
         )
+        print(form.email.data)
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    db_sess = db_session.create_session()
+    if form.validate_on_submit():
+        if check_password_hash(db_sess.query(User).filter(User.email.like(form.email.data)).first().hashed_password, form.password.data):
+            return redirect('/')
+        else:
+            return render_template('login.html', title='Вход',
+                                       form=form,
+                                       message="Неверные данные")
     return render_template('login.html', title='Вход', form=form)
+
 
 if __name__ == '__main__':
     main()
