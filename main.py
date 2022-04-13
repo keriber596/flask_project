@@ -1,3 +1,8 @@
+from smtplib import SMTP
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email_validate import validate
+from config import from_email, password
 from flask import Flask, render_template
 from werkzeug.utils import redirect
 from werkzeug.security import check_password_hash
@@ -24,24 +29,36 @@ def _():
 def reqister():
     form = RegisterForm()
     if form.validate_on_submit():
-        if form.password.data != form.password_again.data:
+        msg = MIMEMultipart()
+        server = SMTP('smtp.gmail.com: 587')
+        if validate(form.email.data):
+            if form.password.data != form.password_again.data:
+                return render_template('register.html', title='Регистрация',
+                                       form=form,
+                                       message="Пароли не совпадают")
+            db_sess = db_session.create_session()
+            if db_sess.query(User).filter(User.email == form.email.data).first():
+                return render_template('register.html', title='Регистрация',
+                                       form=form,
+                                       message="Такой пользователь уже есть")
+            user = User(
+                name=form.name.data,
+                email=form.email.data,
+            )
+            user.set_password(form.password.data)
+            db_sess.add(user)
+            db_sess.commit()
+            message = 'Вы зарегистрировались'
+            msg.attach(MIMEText(message, 'plain'))
+            server.starttls()
+            server.login(from_email, password)
+            server.sendmail(from_email, form.email.data, msg.as_string())
+            server.quit()
+            return redirect('/login')
+        else:
             return render_template('register.html', title='Регистрация',
                                    form=form,
-                                   message="Пароли не совпадают")
-        db_sess = db_session.create_session()
-        if db_sess.query(User).filter(User.email == form.email.data).first():
-            return render_template('register.html', title='Регистрация',
-                                   form=form,
-                                   message="Такой пользователь уже есть")
-        user = User(
-            name=form.name.data,
-            email=form.email.data,
-        )
-        print(form.email.data)
-        user.set_password(form.password.data)
-        db_sess.add(user)
-        db_sess.commit()
-        return redirect('/login')
+                                   message="Такого адреса не существует")
     return render_template('register.html', title='Регистрация', form=form)
 
 
