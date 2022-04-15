@@ -4,9 +4,13 @@ from flask_login import LoginManager, login_user
 from forms.users import RegisterForm
 from forms.login import LoginForm
 from data.__all_models import User
+from flask_admin import Admin
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sBPkvAZXVsSNPq1SAjNQ'
+app.config['FLASK_ADMIN_SWATCH'] = 'fp2oDS32FULFk43irs'
+admin = Admin(app, name='akatsuki', template_mode='bootstrap3')
 login_manager = LoginManager()
 login_manager.init_app(app)
 
