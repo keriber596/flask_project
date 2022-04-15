@@ -1,3 +1,4 @@
+from funs import pcheck
 from smtplib import SMTP
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -10,8 +11,10 @@ from data import db_session
 from data.users import User
 from forms.reg_user import RegisterForm
 from forms.login_user import LoginForm
+from flask_ngrok import run_with_ngrok
 
 app = Flask(__name__)
+run_with_ngrok(app)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
@@ -36,6 +39,11 @@ def reqister():
                 return render_template('register.html', title='Регистрация',
                                        form=form,
                                        message="Пароли не совпадают")
+            error = pcheck(form.password.data)
+            if error is not True:
+                return render_template('register.html', title='Регистрация',
+                                       form=form,
+                                       message=error)
             db_sess = db_session.create_session()
             if db_sess.query(User).filter(User.email == form.email.data).first():
                 return render_template('register.html', title='Регистрация',
@@ -44,6 +52,7 @@ def reqister():
             user = User(
                 name=form.name.data,
                 email=form.email.data,
+                password=form.password.data
             )
             user.set_password(form.password.data)
             db_sess.add(user)
@@ -67,12 +76,13 @@ def login():
     form = LoginForm()
     db_sess = db_session.create_session()
     if form.validate_on_submit():
-        if check_password_hash(db_sess.query(User).filter(User.email.like(form.email.data)).first().hashed_password, form.password.data):
+        if check_password_hash(db_sess.query(User).filter(User.email.like(form.email.data)).first().hashed_password,
+                               form.password.data):
             return redirect('/')
         else:
             return render_template('login.html', title='Вход',
-                                       form=form,
-                                       message="Неверные данные")
+                                   form=form,
+                                   message="Неверные данные")
     return render_template('login.html', title='Вход', form=form)
 
 
