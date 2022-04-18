@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript">
+    </script>
+    <body>
+        <div id="map" style="width: 1920px; height: 1080px"></div>
+    </body>
+    <script type="text/javascript">
+    ymaps.ready(init);
+    function init(){
+        var myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 7,
+            controls: ['zoomControl']
+
+        });
+        var myPlacemark = new ymaps.Placemark([55.8, 37.6]);
+        myMap.geoObjects.add(myPlacemark);
+    }
+    </script>
+</head>
+</html>

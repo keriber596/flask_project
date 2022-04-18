@@ -86,5 +86,10 @@ def login():
     return render_template('login.html', title='Вход', form=form)
 
 
+@app.route('/map', methods=['GET', 'POST'])
+def map():
+    return render_template('map.html')
+
+
 if __name__ == '__main__':
     main()
