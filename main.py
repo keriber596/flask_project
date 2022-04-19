@@ -71,5 +71,28 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.route('/reviews', methods=['GET', 'POST'])
+def reviews():
+    form = ReviewsForm()
+    if request.method == "POST":
+        db_sess = db_session.create_session()
+        review = Review(
+            name=form.name.data,
+            text=form.text_reviews.data,
+            time=form.time.data
+        )
+        db_sess.add(review)
+        db_sess.commit()
+        return redirect(url_for("index"))
+    return render_template('reviews.html', form=form)
+
+
+@app.route('/reviews_page', methods=['GET'])
+def reviews_page():
+    db_sess = db_session.create_session()
+    reviews_page = db_sess.query(Review)
+    return render_template("reviews_page.html", reviews=reviews_page)
+
+
 if __name__ == "__main__":
     main()

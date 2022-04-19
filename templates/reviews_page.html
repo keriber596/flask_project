@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+<h1>Отзывы</h1>
+{% for item in reviews%}
+<div class="col-md6 border rounded">
+    <div>
+        <h3>{{item.text}}</h3>
+    </div>
+    <div>
+        <h4>Время ожидание заказа - {{item.time}}</h4>
+    </div>
+    <div>
+        <h4>Автор - {{item.name}}</h4>
+        <h5>Дата написания - {{item.created_date}}</h5>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
