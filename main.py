@@ -1,23 +1,19 @@
-from flask import Flask, render_template, redirect, request
-from data import db_session
-from flask_login import LoginManager, login_user
-from forms.users import RegisterForm
-from forms.login import LoginForm
-from data.__all_models import User
-from flask_admin import Admin
+from flask import Flask, render_template, url_for, redirect, request
+from flask_login import LoginManager, login_user, logout_user
+from flask_bootstrap import Bootstrap
 
+from data import db_session
+from data.users import User
+from data.reviews import Review
+from forms.reg_user import RegisterForm
+from forms.login_user import LoginForm
+from forms.reviews import ReviewsForm
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'sBPkvAZXVsSNPq1SAjNQ'
-app.config['FLASK_ADMIN_SWATCH'] = 'fp2oDS32FULFk43irs'
-admin = Admin(app, name='akatsuki', template_mode='bootstrap3')
+app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
-
-
-def main():
-    db_session.global_init("db/data.db")
-    app.run()
+boostrap = Bootstrap(app)
 
 
 @login_manager.user_loader
@@ -26,13 +22,19 @@ def load_user(user_id):
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/', methods=['GET', 'POST'])
+def main():
+    db_session.global_init("db/data.db")
+    app.run()
+
+
+@app.route('/')
+@app.route('/index')
 def index():
-    return render_template('base.html')
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
-def reqister():
+def register():
     form = RegisterForm()
     if form.validate_on_submit():
         if form.password.data != form.password_again.data:
@@ -43,16 +45,15 @@ def reqister():
         if db_sess.query(User).filter(User.email == form.email.data).first():
             return render_template('register.html', title='Регистрация',
                                    form=form,
-                                   message="Такая электронная почта уже используется!")
+                                   message="Такой пользователь уже есть")
         user = User(
             name=form.name.data,
             email=form.email.data,
-            about=form.about.data
         )
         user.set_password(form.password.data)
         db_sess.add(user)
         db_sess.commit()
-        return redirect('/login')
+        return redirect(url_for("login"))
     return render_template('register.html', title='Регистрация', form=form)
 
 
@@ -64,10 +65,8 @@ def login():
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            return redirect("/")
-        return render_template('login.html',
-                               message="Неправильный логин или пароль",
-                               form=form)
+            return redirect(url_for("index"))
+        return render_template('login.html', message="Неправильный логин или пароль", form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -94,5 +93,16 @@ def reviews_page():
     return render_template("reviews_page.html", reviews=reviews_page)
 
 
-if __name__ == "__main__":
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect("index")
+
+
+@app.route("/menu")
+def menu():
+    return render_template("menu.html", title="МЕНЮ")
+
+
+if __name__ == '__main__':
     main()

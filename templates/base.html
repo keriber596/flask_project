@@ -1,46 +1,40 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-          crossorigin="anonymous">
-    <title>{{title}}</title>
-</head>
-<body>
-<header class="p-3 bg-dark text-white">
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+    {% if title %}{{ title }}{% else %}AKATKUKI{% endif %}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">AKATSUKI</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('menu') }}">МЕНЮ</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                    <li><a href="{{ url_for('login') }}">ВОЙТИ</a></li>
+                    {% else %}
+                    <li><a href="#">ПРОФИЛЬ</a></li>
+                    <li><a href="logout">ВЫЙТИ</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
     <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-          <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
-        </a>
-
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="#" class="nav-link px-2 text-secondary">Меню</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Акции</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">О нас</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">Контакты</a></li>
-        </ul>
-
-        <div>
-        <form action="/login" class="form-inline" method="POST">
-            <input type="submit" class="btn btn-success" value="Логин">
-        </form>
-        </div>
-        <div>
-        <form action="/register" method="POST">
-            <input type="submit" class="btn btn-primary" value="Регистрация">
-        </form>
-        </div>
-
-      </div>
+        {% block app_content %}{% endblock %}
     </div>
-  </header>
-<!-- Begin page content -->
-<main role="main" class="container">
-    {% block content %}{% endblock %}
-</main>
-</body>
-</html>
+{% endblock %}
