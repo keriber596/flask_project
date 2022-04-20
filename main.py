@@ -1,20 +1,19 @@
-from flask import Flask, render_template, url_for, redirect, request
-from flask_login import LoginManager, login_user, logout_user, current_user
-from flask_bootstrap import Bootstrap
-from funs import pcheck
-from smtplib import SMTP
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email_validate import validate
 import csv
 from data import db_session
-from data.users import User
 from data.reviews import Review
-from forms.reg_user import RegisterForm
-from forms.login_user import LoginForm
-
-from forms.reviews import ReviewsForm
+from data.users import User
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email_validate import validate
+from flask import Flask, render_template, url_for, redirect, request, make_response
+from flask_bootstrap import Bootstrap
+from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_ngrok import run_with_ngrok
+from forms.login_user import LoginForm
+from forms.reg_user import RegisterForm
+from forms.reviews import ReviewsForm
+from funs import pcheck
+from smtplib import SMTP
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -34,13 +33,26 @@ def main():
     db_session.global_init("db/data.db")
     app.run()
 
+def read_csv(content):
+    with open("static/csv/food_items.csv", encoding="utf8") as csvfile:
+        reader = csv.reader(csvfile, delimiter="-")
+        res=[]
+        for i in reader:
+            if i[0] in content:
+                for j in range(content.count(i[0])):
+                    res.append(i[2])
+                    print(1)
+        prices = [int(i.rstrip("₽")) for i in res]
+        s = sum(prices)
+    return s, prices, len(content)
 
 @app.route('/')
 @app.route('/index')
 def index():
     db_sess = db_session.create_session()
-    reviews_page = db_sess.query(Review)
-    return render_template('index.html', reviews=reviews_page)
+    reviews = db_sess.query(Review)
+    reviews = reviews[-3:]
+    return render_template('index.html', reviews=reviews)
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -92,8 +104,8 @@ def login():
             login_user(user, remember=form.remember_me.data)
             return redirect("/")
         return render_template('login.html',
-                                message="Неправильный логин или пароль",
-                                form=form)
+                               message="Неправильный логин или пароль",
+                               form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
 
@@ -102,31 +114,55 @@ def logout():
     logout_user()
     return redirect("/index")
 
-
-@app.route('/map', methods=['GET', 'POST'])
-def map():
-
-    return render_template('map.html')
-
-
 @app.route("/menu")
 def menu():
-    menu_list=[]
+    menu_list = []
     with open('static/csv/food_items.csv', encoding='utf8') as csvfile:
-        reader= csv.reader(csvfile, delimiter='-')
+        reader = csv.reader(csvfile, delimiter='-')
         for i, j in enumerate(reader):
-            if i==0:
-
+            if i == 0:
                 continue
             else:
                 menu_list.append(j)
     return render_template("menu.html", title="МЕНЮ", menu_list=menu_list)
 
-@app.route("/basket")
-def add_to_basket():
-    pass
 
-@app.route('/reviews', methods=['GET', 'POST'])
+@app.route("/basket")
+@login_required
+def basket():
+    content = request.cookies.get(current_user.email)
+    if content == None:
+        add_to_basket("")
+    content = list(content.split("-"))
+    total, prices, length = read_csv(content)
+    return render_template("basket.html", content=content, prices=prices, total=total, len=length)
+
+
+@app.route("/add/<item>")
+@login_required
+def add_to_basket(item):
+    content = request.cookies.get(current_user.email)
+    if content:
+        content = content.split("-")
+        content.append(item)
+    else:
+        content = []
+        content.append(item)
+    total, prices, length = read_csv(content)
+    resp = make_response(render_template("basket.html", content=content, prices=prices, total=total, len=len(content)))
+    resp.set_cookie(current_user.email, "-".join(content), max_age=60 * 60 * 48)
+    return resp
+
+
+@app.route("/clear_basket")
+@login_required
+def clear_basket():
+    resp = make_response(render_template("basket.html", content=[""]))
+    resp.set_cookie(current_user.email, "")
+    return resp
+
+
+@app.route('/review_form', methods=['GET', 'POST'])
 def reviews():
     form = ReviewsForm()
     if request.method == "POST":
@@ -139,14 +175,14 @@ def reviews():
         db_sess.add(review)
         db_sess.commit()
         return redirect(url_for("index"))
-    return render_template('reviews.html', form=form)
+    return render_template('review_form.html', form=form)
 
 
-@app.route('/reviews_page', methods=['GET'])
-def reviews_page():
-    db_sess = db_session.create_session()
-    reviews_page = db_sess.query(Review)
-    return render_template("reviews_page.html", reviews=reviews_page)
+@app.route('/make_order')
+@login_required
+def order():
+    return render_template('order.html')
+
 
 if __name__ == '__main__':
     main()

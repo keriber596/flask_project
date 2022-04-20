@@ -30,30 +30,34 @@
     <link href="{{url_for('static', filename='css/navbar.css')}}" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-sm navbar-light bg-light" aria-label="Third navbar example">
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
     <div class="container">
         <img src="{{url_for('static', filename='img/logo.png')}}" alt="" width="40" height="35"
              class="d-inline-block align-text-top">
         <a class="navbar-brand" href="{{url_for('index')}}">AKATSUKI</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03"
-                aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03"
+                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarsExample03">
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
             <ul class="navbar-nav me-auto mb-2 mb-sm-0">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{url_for('menu')}}">МЕНЮ</a>
                 </li>
             </ul>
 
-            <span class="navbar-text">
+            <div class=" nav-item dropdown">
                 {% if current_user.is_anonymous %}
                 <a href="{{url_for('login')}}">ВОЙТИ</a>
                 {% else %}
-                {{ current_user.name }}
-                <a href="{{ url_for('logout') }}">Logout</a>
+                <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ current_user.name }}</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                    <li><a class="dropdown-item" href="{{url_for('basket')}}">Корзина</a></li>
+                    <li><a class="dropdown-item" href="{{url_for('logout')}}">Выйти</a></li>
+                </ul>
                 {% endif %}
-            </span>
+            </div>
         </div>
     </div>
 </nav>

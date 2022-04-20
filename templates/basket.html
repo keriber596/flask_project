@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block app_content %}
+{% if content!=[''] %}
+<div class="container">
+    {% for item in range(len) %}
+    {% include "_basket_item.html" %}
+    {% endfor %}
+</div>
+<div style="margin-left:30px;font-size:30px;">ИТОГО: {{total}}</div>
+<div style="margin-left:30px" align="right"><a class="btn btn-lg btn-light" href="{{url_for('clear_basket')}}">Очистить
+    корзину</a></div>
+<div style="margin-left:30px;"><a class="btn btn-lg btn-light" href="{{url_for('order')}}">Оформить заказ</a></div>
+{% else %}
+<h1>Корзина пуста</h1>
+<p><a class="btn btn-lg btn-light" href="{{url_for('menu')}}">Выбрать блюдо</a></p>
+{% endif %}
+{% endblock %}

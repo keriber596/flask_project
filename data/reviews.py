@@ -10,5 +10,5 @@ class Review(SqlAlchemyBase):
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     text = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     time = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    created_date = sqlalchemy.Column(sqlalchemy.DateTime,
+    created_date = sqlalchemy.Column(sqlalchemy.Date,
                                      default=datetime.date.today)
