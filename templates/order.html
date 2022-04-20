@@ -1,4 +1,17 @@
 {% extends "base.html" %}
 {% block app_content %}
 <h1>ЗАКАЗ</h1>
+{% if msg %}
+<h2>{{ msg }}</h2>
+{% else %}
+<form>
+    {{ form.hidden_tag() }}
+    <div style="width:60%; font-size:24px;">{{ form.address.label }}
+        {{ form.address(class="form-control") }}</div>
+    <p style="font-size:24px;">{{ form.payment.label }}</p>
+    <p>{{ form.payment() }}</p>
+
+    <p style="margin-top:50px;">{{ form.submit(class="btn btn-lg btn-light") }}</p>
+</form>
+{% endif %}
 {% endblock %}

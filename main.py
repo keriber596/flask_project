@@ -8,10 +8,11 @@ from email_validate import validate
 from flask import Flask, render_template, url_for, redirect, request, make_response
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from flask_ngrok import run_with_ngrok
 from forms.login_user import LoginForm
+from forms.order import OrderForm
 from forms.reg_user import RegisterForm
 from forms.reviews import ReviewsForm
+
 from funs import pcheck
 from smtplib import SMTP
 
@@ -33,18 +34,19 @@ def main():
     db_session.global_init("db/data.db")
     app.run()
 
+
 def read_csv(content):
     with open("static/csv/food_items.csv", encoding="utf8") as csvfile:
         reader = csv.reader(csvfile, delimiter="-")
-        res=[]
+        res = []
         for i in reader:
             if i[0] in content:
                 for j in range(content.count(i[0])):
                     res.append(i[2])
-                    print(1)
         prices = [int(i.rstrip("₽")) for i in res]
         s = sum(prices)
     return s, prices, len(content)
+
 
 @app.route('/')
 @app.route('/index')
@@ -66,6 +68,12 @@ def register():
                 return render_template('register.html', title='Регистрация',
                                        form=form,
                                        message="Пароли не совпадают")
+
+            error = pcheck(form.password.data)
+            if error is not True:
+                return render_template('register.html', title='Регистрация',
+                                       form=form,
+                                       message=error)
             db_sess = db_session.create_session()
             if db_sess.query(User).filter(User.email == form.email.data).first():
                 return render_template('register.html', title='Регистрация',
@@ -114,6 +122,7 @@ def logout():
     logout_user()
     return redirect("/index")
 
+
 @app.route("/menu")
 def menu():
     menu_list = []
@@ -131,9 +140,9 @@ def menu():
 @login_required
 def basket():
     content = request.cookies.get(current_user.email)
-    if content == None:
+    if content is None:
         clear_basket()
-        prices, total, length= 0, 0, 0
+        prices, total, length = 0, 0, 0
     else:
         content = list(content.split("-"))
         total, prices, length = read_csv(content)
@@ -144,7 +153,7 @@ def basket():
 @login_required
 def add_to_basket(item):
     content = request.cookies.get(current_user.email)
-    if content!="" and content!=None:
+    if content != "" and content is not None:
         content = content.split("-")
         content.append(item)
     else:
@@ -185,9 +194,21 @@ def reviews():
 def order():
     content = request.cookies.get(current_user.email)
     if content == "":
-        return
-    return render_template('order.html')
+        msg="Для совершения заказа выберите хотя бы одно блюдо"
+        form, total = None, None
+    else:
+        total, rest, rest1 = read_csv(content)
+        form = OrderForm()
+        msg=None
+        resp = make_response(render_template("order.html", form=form, total=total, msg=msg))
+        resp.set_cookie(current_user.email, "")
+        return resp
+    return redirect(url_for('msg'))
 
+@app.route('/msg')
+@login_required
+def msg():
+    return render_template('msg.html')
 
 if __name__ == '__main__':
     main()
