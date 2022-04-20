@@ -133,8 +133,10 @@ def basket():
     content = request.cookies.get(current_user.email)
     if content == None:
         clear_basket()
-    content = list(content.split("-"))
-    total, prices, length = read_csv(content)
+        prices, total, length= 0, 0, 0
+    else:
+        content = list(content.split("-"))
+        total, prices, length = read_csv(content)
     return render_template("basket.html", content=content, prices=prices, total=total, len=length)
 
 
@@ -142,7 +144,7 @@ def basket():
 @login_required
 def add_to_basket(item):
     content = request.cookies.get(current_user.email)
-    if content:
+    if content!="" and content!=None:
         content = content.split("-")
         content.append(item)
     else:
