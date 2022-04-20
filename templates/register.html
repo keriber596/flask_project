@@ -1,46 +1,82 @@
-{% extends "base.html" %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>РЕГИСТРАЦИЯ</title>
 
-{% block content %}
-<h1>Регистрация</h1>
-<form action="" method="post">
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(class="form-control", type="email") }}<br>
-        {% for error in form.email.errors %}
+
+    <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+
+    </style>
+    <link href="{{url_for('static', filename='css/login.css')}}" rel="stylesheet">
+</head>
+<body class="text-center">
+<main class="form-signin">
+    <h1>Регистрация</h1>
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        <img class="mb-4" src="{{url_for('static', filename='img/logo.png')}}" alt="" width="72" height="57">
+        <h1 class="h3 mb-3 fw-normal">РЕГИСТРАЦИЯ</h1>
+        <div class="form-floating">
+            {{ form.email(type="email", class="form-control", id="floatingInput", placeholder="name@example.com") }}
+            <label for="floatingInput">Email</label>
+            {% for error in form.email.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password.label }}<br>
-        {{ form.password(class="form-control", type="password") }}<br>
-        {% for error in form.password.errors %}
+            {% endfor %}
+        </div>
+        <br>
+        <div class="form-floating">
+            {{ form.password(type="password", class="form-control", id="floatingPassword1", placeholder="Повторите
+            пароль") }}
+            <label for="floatingPassword1">Пароль</label>
+            {% for error in form.password.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.password_again.label }}<br>
-        {{ form.password_again(class="form-control", type="password") }}<br>
-        {% for error in form.password_again.errors %}
+            {% endfor %}
+        </div>
+        <div class="form-floating">
+            {{ form.password_again(type="password", class="form-control", id="floatingPassword2", placeholder="Повторите
+            пароль") }}
+            <label for="floatingPassword1">Повторите пароль</label>
+            {% for error in form.password_again.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}
-    </p>
-    <p>
-        {{ form.name.label }}<br>
-        {{ form.name(class="form-control") }}<br>
-        {% for error in form.name.errors %}
+            {% endfor %}
+        </div>
+        <div class="form-floating">
+            {{ form.name(class="form-control", id="floatingInput1", placeholder="Имя") }}
+            <label for="floatingInput1">Ваше имя</label>
+            {% for error in form.name.errors %}
             <p class="alert alert-danger" role="alert">
                 {{ error }}
             </p>
-        {% endfor %}
-    </p>
-    <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
-    {{message}}
-</form>
-{% endblock %}
+            {% endfor %}
+        </div>
+        <br>
+        <div>{{ form.submit(type="submit", class="btn btn-primary") }}</div>
+        {{message}}
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+<style>
+    .c1{font-size:1rem;}
+    .c1 a{
+        text-decoration:none;
+        color:rgb(255, 255, 255);
+    }
+</style>
+<div style="margin-top:50px;">
+    <div  class="d-flex flex-wrap">
+    {% for i in menu_list %}
+        {% include "_item.html" %}
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}

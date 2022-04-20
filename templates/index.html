@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+
+{% block app_content %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/carousel.css')}}">
+<h1 style="padding:40px;" align="center">ГЛАВНАЯ</h1>
+
+  <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="rgb(255, 215, 204)"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption text-start" style="color:#292929">
+            <h1>СЕТ НЕДЕЛИ</h1>
+            <p>Галактика микс всего за 999 рублей!</p>
+            <p><a class="btn btn-lg btn-light" href="/add/Сет%20Галактика%20микс">Заказать</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="rgb(255, 215, 204)"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption" style="color:#292929">
+            <h1>ТОЛЬКО У НАС</h1>
+            <p>Саме вкусные роллы по низким ценам</p>
+            <p><a class="btn btn-lg btn-light" href="{{url_for('menu')}}">Смотреть меню</a></p>
+          </div>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="rgb(255, 215, 204)"/></svg>
+
+        <div class="container">
+          <div class="carousel-caption text-end" style="color:#292929">
+            <h1>ОБРАТНАЯ СВЯЗЬ</h1>
+            <p>Десятки клиентов остались довольны нашим сервисом</p>
+            <p><a class="btn btn-lg btn-light" href="#reviews">Узнать подробнее</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <h2 align="center" style="margin-top:20px; margin-bottom:50px;" id="reviews">ОТЗЫВЫ О НАШЕМ СЕРВИСЕ</h2>
+  <div class="row">
+    {% for item in reviews %}
+    {% include "_review.html" %}
+    {% endfor %}
+  </div>
+  <h2 align="center" style="margin:20px;">НАШ АДРЕС</h2><br>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=ваш API-ключ&lang=ru_RU" type="text/javascript">
+    </script>
+        <div id="map" style="width: 100%px; height: 600px"></div>
+    <script type="text/javascript">
+    ymaps.ready(init);
+    function init(){
+        var myMap = new ymaps.Map("map", {
+            center: [55.76, 37.64],
+            zoom: 9,
+            controls: ['zoomControl']
+
+        });
+        var myPlacemark = new ymaps.Placemark([55.8, 37.6]);
+        myMap.geoObjects.add(myPlacemark);
+    }
+    </script>
+{% endblock %}
