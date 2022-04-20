@@ -132,7 +132,7 @@ def menu():
 def basket():
     content = request.cookies.get(current_user.email)
     if content == None:
-        add_to_basket("")
+        clear_basket()
     content = list(content.split("-"))
     total, prices, length = read_csv(content)
     return render_template("basket.html", content=content, prices=prices, total=total, len=length)
@@ -181,6 +181,9 @@ def reviews():
 @app.route('/make_order')
 @login_required
 def order():
+    content = request.cookies.get(current_user.email)
+    if content == "":
+        return
     return render_template('order.html')
 
 

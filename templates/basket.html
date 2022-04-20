@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block app_content %}
-{% if content!=[''] %}
+{% if content!=[''] and content!=None %}
 <div class="container">
     {% for item in range(len) %}
     {% include "_basket_item.html" %}
