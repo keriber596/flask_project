@@ -7,7 +7,7 @@
     {% endfor %}
 </div>
 <div style="margin-left:30px;font-size:30px;">ИТОГО: {{total}}</div>
-<div style="margin-left:30px" align="right"><a class="btn btn-lg btn-light" href="{{url_for('clear_basket')}}">Очистить
+<div style="margin-left:30px; margin-bottom:35px;" align="right"><a class="btn btn-lg btn-light" href="{{url_for('clear_basket')}}">Очистить
     корзину</a></div>
 <div style="margin-left:30px;"><a class="btn btn-lg btn-light" href="{{url_for('order')}}">Оформить заказ</a></div>
 {% else %}

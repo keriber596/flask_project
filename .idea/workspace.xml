@@ -5,12 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cbbbe8d0-2865-4319-ae40-56d9a9b1ec0b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/forms/order.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/msg.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/all_reviews.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/funs.py" beforeDir="false" afterPath="$PROJECT_DIR$/funs.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/order.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/order.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/csv/food_items.csv" beforeDir="false" afterPath="$PROJECT_DIR$/static/csv/food_items.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/_basket_item.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/_basket_item.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/msg.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/msg.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +198,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650476392678</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="-">
+      <created>1650481353510</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1650481353510</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

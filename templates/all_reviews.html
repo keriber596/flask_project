@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+{% for item in content %}
+{% include "_review.html"%}
+{%  endfor %}
+{% endblock %}

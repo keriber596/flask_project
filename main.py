@@ -165,6 +165,7 @@ def add_to_basket(item):
     return resp
 
 
+
 @app.route("/clear_basket")
 @login_required
 def clear_basket():
@@ -209,6 +210,12 @@ def order():
 @login_required
 def msg():
     return render_template('msg.html')
+
+@app.route('/all_reviews')
+def all_reviews():
+    db_sess = db_session.create_session()
+    content = db_sess.query(Review)
+    return render_template('all_reviews.html', content=content)
 
 if __name__ == '__main__':
     main()
