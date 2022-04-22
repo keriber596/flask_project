@@ -175,7 +175,7 @@ def clear_basket():
 
 
 @app.route('/review_form', methods=['GET', 'POST'])
-def reviews():
+def review_form():
     form = ReviewsForm()
     if request.method == "POST":
         db_sess = db_session.create_session()
