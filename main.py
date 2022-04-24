@@ -34,6 +34,7 @@ def main():
     app.run()
 
 
+# считывание csv-файла для загрузки элементов в корзине
 def read_csv(content):
     with open("static/csv/food_items.csv", encoding="utf8") as csvfile:
         reader = csv.reader(csvfile, delimiter="-")
@@ -122,6 +123,7 @@ def logout():
     return redirect("/index")
 
 
+# страница меню
 @app.route("/menu")
 def menu():
     menu_list = []
@@ -135,6 +137,7 @@ def menu():
     return render_template("menu.html", title="МЕНЮ", menu_list=menu_list)
 
 
+# корзина
 @app.route("/basket")
 @login_required
 def basket():
@@ -148,6 +151,7 @@ def basket():
     return render_template("basket.html", content=content, total=total, len=length)
 
 
+# добавление элемента в корзину
 @app.route("/add/<item>")
 @login_required
 def add_to_basket(item):
@@ -188,6 +192,7 @@ def review_form():
     return render_template('review_form.html', form=form)
 
 
+# оформление заказа
 @app.route('/make_order')
 @login_required
 def order():
@@ -202,12 +207,13 @@ def order():
     return redirect(url_for('msg'))
 
 
+# страница, открывающаяся при завершении заказа
 @app.route('/msg')
 @login_required
 def msg():
     return render_template('msg.html')
 
-
+# страница со всеми отзывами
 @app.route('/all_reviews')
 def all_reviews():
     db_sess = db_session.create_session()
